@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SearchShows from './SearchCharacters';
+import ReactPaginate from 'react-paginate';
 import noImage from '../img/download.jpeg';
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles } from '@material-ui/core';
 
@@ -34,48 +35,44 @@ const useStyles = makeStyles({
 		fontSize: 12
 	}
 });
-const ShowList = (props) => {
-	const regex = /(<([^>]+)>)/gi;
-	const pagenum =Number(props.match.params.pagenum);
+
+const md5 = require('blueimp-md5');
+const publickey = '646c22ad868b1200b3d7197c31274da1';
+const privatekey = '7b81ba2ba9c789b92452003d492daec9553f4dd4';
+const ts = new Date().getTime();
+const stringToHash = ts + privatekey + publickey;
+const hash = md5(stringToHash);
+const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
+const url = baseUrl + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
+
+const CharList = () => {
 	const classes = useStyles();
+	const regex = /(<([^>]+)>)/gi;
 	const [ loading, setLoading ] = useState(true);
 	const [ searchData, setSearchData ] = useState(undefined);
-	const [ showsData, setShowsData ] = useState(undefined);
+	const [ charactersData, setCharactersData ] = useState(undefined);
 	const [ searchTerm, setSearchTerm ] = useState('');
-	const [ error, setError ] = useState('');
-	//const [ pagenum, setCurrentPage ] = useState(0);
+	const [pageCount, setPageCount] = useState(0);
+	const [itemOffset, setItemOffset] = useState(0);
+	const itemsPerPage = 20;
 	let card = null;
- 
-	function prevPage(){
-	 console.log('Inside prevPage')
-	 //console.log(page);
-     //setCurrentPage(page-1);
-	 console.log(pagenum);
-	 let page = pagenum-1
-	 window.location.href=`/shows/page/${page}`;
-	}
 
-	function nextPage(){
-	 console.log('Inside nextPage')
-     //setCurrentPage(page-(-1));
-	 console.log(pagenum);
-	 let page = pagenum+1;
-	 window.location.href=`/shows/page/${page}`;
-	}
 
 	useEffect(() => {
 		console.log('on load useeffect');
 		async function fetchData() {
 			try {
-				const { data } = await axios.get('http://api.tvmaze.com/shows');
-				setShowsData(data);
+				console.log(url);
+				const { data } = await axios.get(baseUrl + '?offset='+itemOffset+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
+				setCharactersData(data);
+				setPageCount(Math.ceil(data.data.total / itemsPerPage));
 				setLoading(false);
 			} catch (e) {
 				console.log(e);
 			}
 		}
 		fetchData();
-	}, []);
+	}, [itemOffset]);
 
 	useEffect(
 		() => {
@@ -83,7 +80,7 @@ const ShowList = (props) => {
 			async function fetchData() {
 				try {
 					console.log(`in fetch searchTerm: ${searchTerm}`);
-					const { data } = await axios.get('http://api.tvmaze.com/search/shows?q=' + searchTerm);
+					const { data } = await axios.get(baseUrl+'?nameStartsWith='+ searchTerm +'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
 					setSearchData(data);
 					setLoading(false);
 				} catch (e) {
@@ -98,57 +95,48 @@ const ShowList = (props) => {
 		[ searchTerm ]
 	);
 
-	useEffect(
-		() => {
-			console.log('pagination useEffect fired');
-			async function fetchData() {
-				try {
-					console.log(`in fetch pagenum: ${pagenum}`);
-					const { data } = await axios.get(`http://api.tvmaze.com/shows?page=${pagenum}`);
-					setShowsData(data);
-					console.log(data);
-					setLoading(false);
-				} catch (error) {
-					console.log(error);
-					//throw new Error('404 Page not found');
-					setError(error.message);
-				}
-			}
-			if(pagenum){
-				console.log('Page requested')
-				fetchData();
-				//window.location.href=`/shows/page/pagenum`
-		}
-			
-		},
-		[ pagenum ]
-	);
-
-
+	
+	  // Invoke when user click to request another page.
+	  const handlePageClick = (event) => {
+		//window.location.href=`/characters/page/${event.selected}`;
+		const newOffset = (event.selected * itemsPerPage) % charactersData.data.total;
+		console.log(
+		  `User requested page number ${event.selected}, which is offset ${newOffset}`
+		);
+		
+		setItemOffset(newOffset);
+	  };
+	//   const handlePageChange = (event)=>{
+	// 	window.location.href=`/characters/page/${event.selected}`;
+	//   }
+	
 
 	const searchValue = async (value) => {
 		setSearchTerm(value);
 	};
-	const buildCard = (show) => {
+	const buildCard = (char) => {
 		return (
-			<Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={show.id}>
+			// <Link to={`/characters/${char.id}`}>
+			// {char.name}<br/>
+			// </Link>
+			
+			<Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={char.id}>
 				<Card className={classes.card} variant='outlined'>
 					<CardActionArea>
-						<Link to={`/shows/${show.id}`}>
+						<Link to={`/characters/${char.id}`}>
 							<CardMedia
 								className={classes.media}
 								component='img'
-								image={show.image && show.image.original ? show.image.original : noImage}
-								title='show image'
+								image={char.thumbnail ? `${char.thumbnail.path}/portrait_fantastic.${char.thumbnail.extension}` : noImage}
+								title='Char image'
 							/>
 
 							<CardContent>
 								<Typography className={classes.titleHead} gutterBottom variant='h6' component='h3'>
-									{show.name}
+									{char.name}
 								</Typography>
 								<Typography variant='body2' color='textSecondary' component='p'>
-									{show.summary ? show.summary.replace(regex, '').substring(0, 139) + '...' : 'No Summary'}
-									<span>More Info</span>
+									{char.description ? char.description.replace(regex, '').substring(0, 139) + '...' : 'No Description'}
 								</Typography>
 							</CardContent>
 						</Link>
@@ -158,27 +146,18 @@ const ShowList = (props) => {
 		);
 	};
 
-	if (pagenum && searchTerm==="") {
-		console.log("Inside Pagination")
-		card =
-			showsData &&
-			showsData.map((show) => {
-				return buildCard(show);
-			});
-	 } 
-
 	 if (searchTerm) {
 		card =
 			searchData &&
-			searchData.map((shows) => {
-				let { show } = shows;
-				return buildCard(show);
+			searchData.data.results.map((shows) => {
+				return buildCard(shows);
 			});
 	} else {
+		console.log(charactersData);
 		card =
-			showsData &&
-			showsData.map((show) => {
-				return buildCard(show);
+			charactersData &&
+			charactersData.data.results.map((char) => {
+				return buildCard(char);
 			});
 	}
 
@@ -188,25 +167,45 @@ const ShowList = (props) => {
 				<h2>Loading....</h2>
 			</div>
 		);
-	}else if(error){
+	}
+	else {
 		return (
 			<div>
-				<h2>{error}</h2>
-			</div>
-		);
-	} else {
-		return (
-			<div>
-				<button disabled={pagenum>0?false:true} onClick={prevPage}>Previous Page</button>
-				&nbsp;&nbsp;
-				<button onClick={nextPage}>Next Page</button>
-				{/* <a href={`/shows/page/${pagenum-1}`}>Previous Page</a>
-				&nbsp;&nbsp;
-				<a href={`/shows/page/${pagenum-(-1)}`}>Next Page</a> */}
+				{/* <PaginatedItems itemsPerPage={20} /> */}
+				{/* <ReactPaginate
+			breakLabel="..."
+			nextLabel="next >"
+			onPageChange={handlePageClick}
+			pageRangeDisplayed={5}
+			pageCount={pageCount}
+			previousLabel="< previous"
+			renderOnZeroPageCount={null}
+		  /> */}
+		  <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+		//onClick={handlePageChange}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
 				<br />
 				<br />
 				<SearchShows searchValue={searchValue} />
-				
+				{/* {card} */}
 				<Grid container className={classes.grid} spacing={5}>
 					{card}
 				</Grid>
@@ -215,4 +214,4 @@ const ShowList = (props) => {
 	}
 };
 
-export default ShowList;
+export default CharList;

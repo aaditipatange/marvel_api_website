@@ -49,10 +49,10 @@ const App = () => {
 					<Link className='showlink' to='/characters/page/0'>
 						Characters
 					</Link>
-          <Link className='showlink' to='/comics/page/0'>
+                    <Link className='showlink' to='/comics/page/0'>
 						Comics
 					</Link>
-          <Link className='showlink' to='/series/page/0'>
+                    <Link className='showlink' to='/series/page/0'>
 						Series
 					</Link>
 				</header>
@@ -60,12 +60,12 @@ const App = () => {
 				<br />
 				<div className='App-body'>
           <Routes>
-					<Route exact path='/' component={Home} />
-					<Route exact path='/characters/page/:page' component={CharacterList} />
-					<Route exact path='/characters/:id' component={Characters} />
-          <Route exact path='/comics/page/:page' component={ComicList} />
+					<Route exact path='/' element={<Home/>} />
+					<Route exact path='/characters/page/:page' element={<CharacterList/>} />
+					<Route exact path='/characters/:id' element={<Characters/>} />
+                    <Route exact path='/comics/page/:page' component={ComicList} />
 					<Route exact path='/comics/:id' component={Comics} />
-          <Route exact path='/series/page/:page' component={SeriesList} />
+                    <Route exact path='/series/page/:page' component={SeriesList} />
 					<Route exact path='/series/:id' component={Series} />
           </Routes>
 				</div>
