@@ -1,7 +1,5 @@
-// export default App;
 import React from 'react';
 import logo from './img/download.png';
-//import logo from './logo.svg';
 import './App.css';
 import CharacterList from './components/CharacterList';
 import Characters from './components/Characters';

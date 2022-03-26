@@ -65,7 +65,6 @@ const ComList = () => {
 		setItemOffset(itemState);
 		async function fetchData() {
 			try {
-				//setItemOffset(itemState);
 				console.log(url);
 				const { data } = await axios.get(baseUrl + '?offset='+itemOffset+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
 				setComicData(data);
@@ -104,8 +103,6 @@ const ComList = () => {
 
 	function prevPage(){
 		console.log('Inside prevPage')
-		//console.log(page);
-		//setCurrentPage(page-1);
 		let pagenum = window.location.href;
 		pagenum = pagenum.split('/');
 		pagenum = pagenum[pagenum.length-1];
@@ -116,7 +113,6 @@ const ComList = () => {
    
 	   function nextPage(){
 		console.log('Inside nextPage')
-		//setCurrentPage(page-(-1));
 		let pagenum = window.location.href;
 		pagenum = pagenum.split('/');
 		pagenum = pagenum[pagenum.length-1];
@@ -124,34 +120,6 @@ const ComList = () => {
 		pagenum = parseInt(pagenum)+1;
 		window.location.href=`/comics/page/${pagenum}`;
 	   }
-
-	// useEffect(
-	// 	() => {
-	// 		console.log('pagination useEffect fired');
-	// 		async function fetchData() {
-	// 			try {
-	// 				console.log(`in fetch pagenum: ${pagenum}`);
-	// 				const { data } = await axios.get(`http://api.tvmaze.com/shows?page=${pagenum}`);
-	// 				setShowsData(data);
-	// 				console.log(data);
-	// 				setLoading(false);
-	// 			} catch (error) {
-	// 				console.log(error);
-	// 				//throw new Error('404 Page not found');
-	// 				setError(error.message);
-	// 			}
-	// 		}
-	// 		if(pagenum){
-	// 			console.log('Page requested')
-	// 			fetchData();
-	// 			//window.location.href=`/shows/page/pagenum`
-	// 	}
-			
-	// 	},
-	// 	[ pagenum ]
-	// );
-
-
 
 	const searchValue = async (value) => {
 		setSearchTerm(value);
@@ -184,20 +152,10 @@ const ComList = () => {
 		);
 	};
 
-	// if (pagenum && searchTerm==="") {
-	// 	console.log("Inside Pagination")
-	// 	card =
-	// 		showsData &&
-	// 		showsData.map((show) => {
-	// 			return buildCard(show);
-	// 		});
-	//  } 
-
 	 if (searchTerm) {
 		card =
 			searchData &&
 			searchData.data.results.map((comic) => {
-				//let { show } = shows;
 				return buildCard(comic);
 			});
 	} else {

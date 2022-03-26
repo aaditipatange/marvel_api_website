@@ -66,7 +66,6 @@ const SeriesList = () => {
 		setItemOffset(itemState);
 		async function fetchData() {
 			try {
-				//setItemOffset(itemState);
 				console.log(url);
 				const { data } = await axios.get(baseUrl + '?offset='+itemOffset+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
 				setSeriesData(data);
@@ -105,8 +104,6 @@ const SeriesList = () => {
 
 	function prevPage(){
 		console.log('Inside prevPage')
-		//console.log(page);
-		//setCurrentPage(page-1);
 		let pagenum = window.location.href;
 		pagenum = pagenum.split('/');
 		pagenum = pagenum[pagenum.length-1];
@@ -117,7 +114,6 @@ const SeriesList = () => {
    
 	   function nextPage(){
 		console.log('Inside nextPage')
-		//setCurrentPage(page-(-1));
 		let pagenum = window.location.href;
 		pagenum = pagenum.split('/');
 		pagenum = pagenum[pagenum.length-1];
@@ -126,25 +122,6 @@ const SeriesList = () => {
 		window.location.href=`/series/page/${pagenum}`;
 	   }
 	
-	  // Invoke when user click to request another page.
-	//   const handlePageClick = (event) => {
-	// 	  setSearchTerm('');
-	// 	  SearchCharacters.searchValue='';
-	// 	  //let link
-	// 	  <NavLink to={event.selected}/>
-	// 	//window.history.pushState('','',`/characters/page/${event.selected}`);
-	// 	const newOffset = (event.selected * itemsPerPage) % charactersData.data.total;
-	// 	console.log(
-	// 	  `User requested page number ${event.selected}, which is offset ${newOffset}`
-	// 	);
-	// 	//itemState = newOffset;
-	// 	setItemOffset(newOffset);
-	//   };
-	//   const handlePageChange = (event)=>{
-	// 	window.location.href=`/characters/page/${event.selected}`;
-	//   }
-	
-
 	const searchValue = async (value) => {
 		setSearchTerm(value);
 	};
