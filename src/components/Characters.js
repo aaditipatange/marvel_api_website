@@ -45,26 +45,10 @@ const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
 const Character = () => {
 	const [ charData, setCharData ] = useState(undefined);
 	const [ loading, setLoading ] = useState(true);
+	const NA='N/A';
 	//const classes = useStyles();
 	let {id} = useParams();
-	// const tConvert = (time) => {
-	// 	// Check correct time format and split into components
-	// 	time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [ time ];
-
-	// 	if (time.length > 1) {
-	// 		// If time format correct
-	// 		time = time.slice(1); // Remove full string match value
-	// 		time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
-	// 		time[0] = +time[0] % 12 || 12; // Adjust hours
-	// 	}
-	// 	return time.join(''); // return adjusted time or original string
-	// };
-	// const formatDate = (showdate) => {
-	// 	var year = showdate.substring(0, 4);
-	// 	var month = showdate.substring(5, 7);
-	// 	var day = showdate.substring(8, 10);
-	// 	return month + '/' + day + '/' + year;
-	// };
+	
 	useEffect(
 		() => {
 			console.log ("useEffect fired")
@@ -100,11 +84,16 @@ const Character = () => {
 	} else {
 		return (
 			<div>
-				{charData && charData.data.results[0].name ? charData.data.results[0].name: 'N/A'}<br/>
+				{charData && charData.data.results[0].name ? charData.data.results[0].name: NA}<br/>
 				{/* <img alt={charData.data.results[0].name} src={char.thumbnail.path}'/portrait_fantastic.'{char.thumbnail.extension}/> */}
-				{charData && charData.data.results[0].name ? charData.data.results[0].description: 'N/A'}<br/>
-				{charData && charData.data.results[0].comics ? charData.data.results[0].comics.items.map((comic)=>{ return <Link to={comic.resourceURI}>{comic.name}<br/></Link>}):<li>N/A</li>}<br/>
-				<br/>{charData && charData.data.results[0].series ? charData.data.results[0].series.items.map((series)=>{ return <Link to={series.resourceURI}>{series.name}<br/></Link>}):<li>N/A</li>}
+				{charData && charData.data.results[0].description ? charData.data.results[0].description : NA }<br/>
+				{charData && charData.data.results[0].comics.items ? charData.data.results[0].comics.items.map((comic)=>{ return <li>{comic.name}<br/></li>}):<li>N/A</li>}
+				{/* {charData && charData.data.results[0].comics ? charData.data.results[0].comics.items.map((comic)=>{ 
+					let comicId = comic.resourceURI.split('/')
+					comicId = comicId[comicId.length-1];
+					let link = 'comic/'+ comicId
+					return <Redirect to={link}>{comic.name}<br/></Redirect>}):<li>N/A</li>}<br/> */}
+				<br/>{charData && charData.data.results[0].series.items ? charData.data.results[0].series.items.map((series)=>{ return <Link to={series.resourceURI}>{series.name}<br/></Link>}):<li>N/A</li>}
 				
             <br/><br/><Link to='/characters/page/0'>Back to all Characters...</Link>
 			</div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import SearchShows from './SearchCharacters';
-import ReactPaginate from 'react-paginate';
+import { Link, useParams } from 'react-router-dom';
+import SearchCharacters from './SearchCharacters';
 import noImage from '../img/download.jpeg';
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles } from '@material-ui/core';
 
@@ -47,32 +46,41 @@ const url = baseUrl + '?ts=' + ts + '&apikey=' + publickey + '&hash=' + hash;
 
 const CharList = () => {
 	const classes = useStyles();
+	let page = useParams();
+	page = parseInt(page.page);
+	const itemsPerPage = 20;
+	let itemState = itemsPerPage * page;
 	const regex = /(<([^>]+)>)/gi;
 	const [ loading, setLoading ] = useState(true);
 	const [ searchData, setSearchData ] = useState(undefined);
 	const [ charactersData, setCharactersData ] = useState(undefined);
 	const [ searchTerm, setSearchTerm ] = useState('');
-	const [pageCount, setPageCount] = useState(0);
-	const [itemOffset, setItemOffset] = useState(0);
-	const itemsPerPage = 20;
+	const [ pageCount, setPageCount ] = useState(0);
+	const [ itemOffset, setItemOffset ] = useState(0);
+	const [ error, setError ] = useState('');
+	
 	let card = null;
-
 
 	useEffect(() => {
 		console.log('on load useeffect');
+		setItemOffset(itemState);
 		async function fetchData() {
 			try {
+				//setItemOffset(itemState);
 				console.log(url);
 				const { data } = await axios.get(baseUrl + '?offset='+itemOffset+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
 				setCharactersData(data);
 				setPageCount(Math.ceil(data.data.total / itemsPerPage));
 				setLoading(false);
+				if(page>=(Math.ceil(data.data.total / itemsPerPage))){
+					setError('404 Page not found');
+				}
 			} catch (e) {
 				console.log(e);
 			}
 		}
 		fetchData();
-	}, [itemOffset]);
+	}, [itemOffset,page,pageCount,itemState]);
 
 	useEffect(
 		() => {
@@ -95,17 +103,43 @@ const CharList = () => {
 		[ searchTerm ]
 	);
 
+	function prevPage(){
+		console.log('Inside prevPage')
+		//console.log(page);
+		//setCurrentPage(page-1);
+		let pagenum = window.location.href;
+		pagenum = pagenum.split('/');
+		pagenum = pagenum[pagenum.length-1];
+		console.log(pagenum);
+		pagenum = parseInt(pagenum)-1;
+		window.location.href=`/characters/page/${pagenum}`;
+	   }
+   
+	   function nextPage(){
+		console.log('Inside nextPage')
+		//setCurrentPage(page-(-1));
+		let pagenum = window.location.href;
+		pagenum = pagenum.split('/');
+		pagenum = pagenum[pagenum.length-1];
+		console.log(pagenum);
+		pagenum = parseInt(pagenum)+1;
+		window.location.href=`/characters/page/${pagenum}`;
+	   }
 	
 	  // Invoke when user click to request another page.
-	  const handlePageClick = (event) => {
-		//window.location.href=`/characters/page/${event.selected}`;
-		const newOffset = (event.selected * itemsPerPage) % charactersData.data.total;
-		console.log(
-		  `User requested page number ${event.selected}, which is offset ${newOffset}`
-		);
-		
-		setItemOffset(newOffset);
-	  };
+	//   const handlePageClick = (event) => {
+	// 	  setSearchTerm('');
+	// 	  SearchCharacters.searchValue='';
+	// 	  //let link
+	// 	  <NavLink to={event.selected}/>
+	// 	//window.history.pushState('','',`/characters/page/${event.selected}`);
+	// 	const newOffset = (event.selected * itemsPerPage) % charactersData.data.total;
+	// 	console.log(
+	// 	  `User requested page number ${event.selected}, which is offset ${newOffset}`
+	// 	);
+	// 	//itemState = newOffset;
+	// 	setItemOffset(newOffset);
+	//   };
 	//   const handlePageChange = (event)=>{
 	// 	window.location.href=`/characters/page/${event.selected}`;
 	//   }
@@ -116,10 +150,6 @@ const CharList = () => {
 	};
 	const buildCard = (char) => {
 		return (
-			// <Link to={`/characters/${char.id}`}>
-			// {char.name}<br/>
-			// </Link>
-			
 			<Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={char.id}>
 				<Card className={classes.card} variant='outlined'>
 					<CardActionArea>
@@ -149,8 +179,8 @@ const CharList = () => {
 	 if (searchTerm) {
 		card =
 			searchData &&
-			searchData.data.results.map((shows) => {
-				return buildCard(shows);
+			searchData.data.results.map((char) => {
+				return buildCard(char);
 			});
 	} else {
 		console.log(charactersData);
@@ -168,44 +198,20 @@ const CharList = () => {
 			</div>
 		);
 	}
+	else if(error){
+		return (
+			<div>
+				<h2>{error}</h2>
+			</div>
+		);
+	}
 	else {
 		return (
 			<div>
-				{/* <PaginatedItems itemsPerPage={20} /> */}
-				{/* <ReactPaginate
-			breakLabel="..."
-			nextLabel="next >"
-			onPageChange={handlePageClick}
-			pageRangeDisplayed={5}
-			pageCount={pageCount}
-			previousLabel="< previous"
-			renderOnZeroPageCount={null}
-		  /> */}
-		  <ReactPaginate
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-		//onClick={handlePageChange}
-        pageRangeDisplayed={3}
-        marginPagesDisplayed={2}
-        pageCount={pageCount}
-        previousLabel="< previous"
-        pageClassName="page-item"
-        pageLinkClassName="page-link"
-        previousClassName="page-item"
-        previousLinkClassName="page-link"
-        nextClassName="page-item"
-        nextLinkClassName="page-link"
-        breakLabel="..."
-        breakClassName="page-item"
-        breakLinkClassName="page-link"
-        containerClassName="pagination"
-        activeClassName="active"
-        renderOnZeroPageCount={null}
-      />
-				<br />
-				<br />
-				<SearchShows searchValue={searchValue} />
-				{/* {card} */}
+				<button disabled={page>0?false:true} onClick={prevPage}>Previous Page</button>
+				&nbsp;&nbsp;
+				<button disabled={page>=(pageCount-1)?true:false} onClick={nextPage}>Next Page</button><br/><br/>
+				<SearchCharacters searchValue={searchValue} />
 				<Grid container className={classes.grid} spacing={5}>
 					{card}
 				</Grid>

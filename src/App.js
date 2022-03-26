@@ -1,31 +1,7 @@
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
 // export default App;
 import React from 'react';
-//import logo from './img/tvm-header-logo.png';
-import logo from './logo.svg';
+import logo from './img/download.png';
+//import logo from './logo.svg';
 import './App.css';
 import CharacterList from './components/CharacterList';
 import Characters from './components/Characters';
@@ -42,7 +18,7 @@ const App = () => {
 			<div className='App'>
 				<header className='App-header'>
 					<img src={logo} className='App-logo' alt='logo' />
-					<h1 className='App-title'>Welcome to the React.js TV Maze API Example</h1>
+					<h1 className='App-title'>Welcome to the React.js Marvel application</h1>
 					<Link className='showlink' to='/'>
 						Home
 					</Link>
@@ -63,10 +39,10 @@ const App = () => {
 					<Route exact path='/' element={<Home/>} />
 					<Route exact path='/characters/page/:page' element={<CharacterList/>} />
 					<Route exact path='/characters/:id' element={<Characters/>} />
-                    <Route exact path='/comics/page/:page' component={ComicList} />
-					<Route exact path='/comics/:id' component={Comics} />
-                    <Route exact path='/series/page/:page' component={SeriesList} />
-					<Route exact path='/series/:id' component={Series} />
+                    <Route exact path='/comics/page/:page' element={<ComicList/>} />
+					<Route exact path='/comics/:id' element={<Comics/>} />
+                    <Route exact path='/series/page/:page' element={<SeriesList/>} />
+					<Route exact path='/series/:id' element={<Series/>} />
           </Routes>
 				</div>
 			</div>
