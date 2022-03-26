@@ -103,7 +103,7 @@ const Character = () => {
 							</p>
 							 <p>
 								<dt className='title'>Comics:</dt>
-								{charData && charData.data.results[0].comics.items ? (
+								{charData && charData.data.results[0].comics.items.length>0 ? (
 									<dd>
 										{charData.data.results[0].comics.items.map((comic)=>{ 
 					                     let comicId = comic.resourceURI.split('/')
@@ -118,7 +118,7 @@ const Character = () => {
 							</p>
 							<p>
 								<dt className='title'>Series:</dt>
-								{charData && charData.data.results[0].series.items ? (
+								{charData && charData.data.results[0].series.items.length>0 ? (
 									<dd>
 										{charData.data.results[0].series.items.map((series)=>{ 
 					                     let seriesId = series.resourceURI.split('/')

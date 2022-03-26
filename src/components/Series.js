@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
-//import noImage from '../img/download.jpeg';
-//import { makeStyles, Card, CardContent, CardMedia, Typography, CardHeader } from '@material-ui/core';
+import noImage from '../img/download.jpeg';
+import { makeStyles, Card, CardContent, CardMedia, Typography, CardHeader } from '@material-ui/core';
 import '../App.css';
-// const useStyles = makeStyles({
-// 	card: {
-// 		maxWidth: 550,
-// 		height: 'auto',
-// 		marginLeft: 'auto',
-// 		marginRight: 'auto',
-// 		borderRadius: 5,
-// 		border: '1px solid #1e8678',
-// 		boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);'
-// 	},
-// 	titleHead: {
-// 		borderBottom: '1px solid #1e8678',
-// 		fontWeight: 'bold'
-// 	},
-// 	grid: {
-// 		flexGrow: 1,
-// 		flexDirection: 'row'
-// 	},
-// 	media: {
-// 		height: '100%',
-// 		width: '100%'
-// 	},
-// 	button: {
-// 		color: '#1e8678',
-// 		fontWeight: 'bold',
-// 		fontSize: 12
-// 	}
-// });
+const useStyles = makeStyles({
+	card: {
+		maxWidth: 550,
+		height: 'auto',
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		borderRadius: 5,
+		border: '1px solid #1e8678',
+		boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);'
+	},
+	titleHead: {
+		borderBottom: '1px solid #1e8678',
+		fontWeight: 'bold'
+	},
+	grid: {
+		flexGrow: 1,
+		flexDirection: 'row'
+	},
+	media: {
+		height: '100%',
+		width: '100%'
+	},
+	button: {
+		color: '#1e8678',
+		fontWeight: 'bold',
+		fontSize: 12
+	}
+});
 
 const md5 = require('blueimp-md5');
 const publickey = '646c22ad868b1200b3d7197c31274da1';
@@ -46,8 +46,8 @@ const Series = () => {
 	const [ seriesData, setSeriesData ] = useState(undefined);
 	const [ loading, setLoading ] = useState(true);
 	const [ error, setError ] = useState('');
-	const NA='N/A';
-	//const classes = useStyles();
+	//const NA='N/A';
+	const classes = useStyles();
 	let {id} = useParams();
 	
 	useEffect(
@@ -70,14 +70,6 @@ const Series = () => {
 		[ id ]
 	);
 
-	// let summary = null;
-	// const regex = /(<([^>]+)>)/gi;
-	// if (charData && charData.summary) {
-	// 	summary = charData && charData.summary.replace(regex, '');
-	// } else {
-	// 	summary = 'No Summary';
-	// }
-
 	if (loading) {
 		return (
 			<div>
@@ -94,126 +86,58 @@ const Series = () => {
 	}
 	 else {
 		return (
-			<div>
-				{seriesData && seriesData.data.results[0].title ? seriesData.data.results[0].title: NA}<br/>
-				{/* <img alt={charData.data.results[0].name} src={char.thumbnail.path}'/portrait_fantastic.'{char.thumbnail.extension}/> */}
-				{seriesData && seriesData.data.results[0].description ? seriesData.data.results[0].description : NA }<br/>
-				{seriesData && seriesData.data.results[0].comics.items ? seriesData.data.results[0].comics.items.map((comic)=>{ return <li>{comic.name}<br/></li>}):<li>N/A</li>}
-				{/* {charData && charData.data.results[0].comics ? charData.data.results[0].comics.items.map((comic)=>{ 
-					let comicId = comic.resourceURI.split('/')
-					comicId = comicId[comicId.length-1];
-					let link = 'comic/'+ comicId
-					return <Redirect to={link}>{comic.name}<br/></Redirect>}):<li>N/A</li>}<br/> */}
-				<br/>{seriesData && seriesData.data.results[0].characters.items ? seriesData.data.results[0].characters.items.map((char)=>{ return <Link to={char.resourceURI}>{char.name}<br/></Link>}):<li>N/A</li>}
-				
-            <br/><br/><Link to='/series/page/0'>Back to all Series...</Link>
-			</div>
-			
 
-			// <Card className={classes.card} variant='outlined'>
-			// 	<CardHeader className={classes.titleHead} title={charData.data.results.name} />
-			// 	<CardMedia
-			// 		className={classes.media}
-			// 		component='img'
-			// 		image={charData.image && charData.image.original ? charData.image.original : noImage}
-			// 		title='show image'
-			// 	/>
+			<Card className={classes.card} variant='outlined'>
+				<CardHeader className={classes.titleHead} title={seriesData.data.results[0].title} />
+				<CardMedia
+								className={classes.media}
+								component='img'
+								image={seriesData.data.results[0].thumbnail ? `${seriesData.data.results[0].thumbnail.path}/portrait_fantastic.${seriesData.data.results[0].thumbnail.extension}` : noImage}
+								title='Series image'
+							/>
 
-			// 	<CardContent>
-			// 		<Typography variant='body2' color='textSecondary' component='span'>
-			// 			<dl>
-			// 				{/* <p>
-			// 					<dt className='title'>Average Rating:</dt>
-			// 					{charData && showData.rating.average ? <dd>{charData.rating.average}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Offical Site:</dt>
-			// 					{showData && showData.officialSite ? (
-			// 						<dd>
-			// 							<a rel='noopener noreferrer' target='_blank' href={showData.officialSite}>
-			// 								{showData.name} Offical Site
-			// 							</a>
-			// 						</dd>
-			// 					) : (
-			// 						<dd>N/A</dd>
-			// 					)}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Network:</dt>
-			// 					{showData && showData.network ? <dd>{showData.network && showData.network.name}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Language:</dt>
-			// 					{showData && showData.language ? <dd>{showData.language}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Runtime:</dt>
-			// 					{showData && showData.runtime ? <dd>{showData.runtime + ' Min'}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Premiered:</dt>
-			// 					{showData && showData.premiered ? <dd>{formatDate(showData.premiered)}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Country:</dt>
-			// 					{showData && showData.network && showData.network.country.name ? (
-			// 						<dd>{showData.network.country.name}</dd>
-			// 					) : (
-			// 						<dd>N/A</dd>
-			// 					)}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Time Zone:</dt>
-			// 					{showData && showData.network && showData.network.country.timezone ? (
-			// 						<dd>{showData.network.country.timezone}</dd>
-			// 					) : (
-			// 						<dd>N/A</dd>
-			// 					)}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Airtime:</dt>
-			// 					{showData && showData.schedule.time ? <dd>{tConvert(showData.schedule.time)}</dd> : <dd>N/A</dd>}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Days Aired:</dt>
-			// 					{showData && showData.schedule.days && showData.schedule.days.length >= 1 ? (
-			// 						<span>
-			// 							{showData.schedule.days.map((day) => {
-			// 								if (showData.schedule.days.length > 1) return <dd key={day}>{day}s,</dd>;
-			// 								return <dd key={day}>{day}s</dd>;
-			// 							})}
-			// 						</span>
-			// 					) : (
-			// 						<dd>N/A</dd>
-			// 					)}
-			// 				</p>
-			// 				<p>
-			// 					<dt className='title'>Status:</dt>
-			// 					{showData && showData.status ? <dd>{showData.status}</dd> : <dd>N/A</dd>}
-			// 				</p>
-
-			// 				<p>
-			// 					<dt className='title'>Genres:</dt>
-			// 					{showData && showData.genres && showData.genres.length >= 1 ? (
-			// 						<span>
-			// 							{showData.genres.map((genre) => {
-			// 								if (showData.genres.length > 1) return <dd key={genre}>{genre},</dd>;
-			// 								return <dd key={genre}>{genre}</dd>;
-			// 							})}
-			// 						</span>
-			// 					) : (
-			// 						<dd>N/A</dd>
-			// 					)}
-			// 				</p> */}
-			// 				<p>
-			// 					<dt className='title'>Summary:</dt>
-			// 					<dd>{summary}</dd>
-			// 				</p>
-			// 			</dl>
-			// 			<Link to='/characters/page/0'>Back to all Characters...</Link>
-			// 		</Typography>
-			// 	</CardContent>
-			// </Card>
+				<CardContent>
+					<Typography variant='body2' color='textSecondary' component='span'>
+						<dl>
+						<p>
+								<dt className='title'>Description:</dt>
+								{seriesData && seriesData.data.results[0].description ? <dd>{seriesData.data.results[0].description}</dd> : <dd>N/A</dd>}
+							</p>
+							<p>
+								<dt className='title'>Comics:</dt>
+								{seriesData && seriesData.data.results[0].comics.items.length>0 ? (
+									<dd>
+										{seriesData.data.results[0].comics.items.map((comic)=>{ 
+					                     let comicId = comic.resourceURI.split('/')
+					                     comicId = comicId[comicId.length-1];
+                                         let link = window.location.href.split('series');
+					                     link = link[0] +'comics/'+ comicId;
+					                     return <a href={link}>{comic.name}<br/></a>})}
+									</dd>
+								) : (
+									<dd>N/A</dd>
+								)}
+							</p>
+							<p>
+								<dt className='title'>Characters:</dt>
+								{seriesData && seriesData.data.results[0].characters.items.length>0 ? (
+									<dd>
+										{seriesData.data.results[0].characters.items.map((char)=>{ 
+					                     let charId = char.resourceURI.split('/')
+					                     charId = charId[charId.length-1];
+                                         let link = window.location.href.split('series');
+					                     link = link[0] +'characters/'+ charId;
+					                     return <a href={link}>{char.name}<br/></a>})}
+									</dd>
+								) : (
+									<dd>N/A</dd>
+								)}
+							</p>
+						</dl>
+						<Link to='/series/page/0'>Back to all Series...</Link>
+					</Typography>
+				</CardContent>
+			</Card>
 		);
 	}
 };
