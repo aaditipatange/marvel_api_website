@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import noImage from '../img/download.jpeg';
 import { makeStyles, Card, CardContent, CardMedia, Typography, CardHeader } from '@material-ui/core';
 import '../App.css';
@@ -77,9 +77,10 @@ const Character = () => {
 	}
 	else if(error){
 		return (
-			<div>
-				<h2>{error}</h2>
-			</div>
+			<Navigate replace to='/error'/>
+			// <div>
+			// 	<h2>{error}</h2>
+			// </div>
 		);
 	} 
 	else {

@@ -24,7 +24,7 @@ input {
 }
 
 .App-header {
-	background-color: #1e8678;
+	background-color: #4879e2;
 	height: 200px;
 	padding: 20px;
 	color: #222;
@@ -63,18 +63,17 @@ col-md-4 {
 }
 .showlink {
 	padding: 0.4rem 0.8rem;
-	background-color: white;
+	background-color: #ffffff;
 	border-radius: 3px;
-	color: #1e8678;
 	text-decoration: none !important;
 	margin: 5px;
 }
 
-.showlink:hover {
+/* .showlink:hover {
 	background-color: transparent;
 	color: white;
 	border: 2px solid white;
-}
+} */
 
 li {
 	padding: 20px;
@@ -91,7 +90,6 @@ div {
 }
 
 a {
-	color: #1e8678;
 	text-decoration: none !important;
 }
 
@@ -106,7 +104,6 @@ ul {
 
 .title {
 	font-weight: bold;
-	color: #1e8678;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {

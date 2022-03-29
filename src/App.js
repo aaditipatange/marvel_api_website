@@ -8,6 +8,7 @@ import Comics from './components/Comics';
 import SeriesList from './components/SeriesList';
 import Series from './components/Series';
 import Home from './components/Home';
+import Error from './components/Error';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -17,7 +18,10 @@ const App = () => {
 				<header className='App-header'>
 					<img src={logo} className='App-logo' alt='logo' />
 					<h1 className='App-title'>Welcome to the React.js Marvel application</h1>
-					<Link className='showlink' to='/'>
+					<h2 className='App-title'>Please click on below buttons for more Information</h2>
+				</header>
+				<br />
+				<Link className='showlink' to='/'>
 						Home
 					</Link>
 					<Link className='showlink' to='/characters/page/0'>
@@ -29,9 +33,8 @@ const App = () => {
                     <Link className='showlink' to='/series/page/0'>
 						Series
 					</Link>
-				</header>
-				<br />
-				<br />
+					<br />
+					<br />
 				<div className='App-body'>
           <Routes>
 					<Route exact path='/' element={<Home/>} />
@@ -41,6 +44,8 @@ const App = () => {
 					<Route exact path='/comics/:id' element={<Comics/>} />
                     <Route exact path='/series/page/:page' element={<SeriesList/>} />
 					<Route exact path='/series/:id' element={<Series/>} />
+					<Route exact path='/*' element={<Error/>} />
+					<Route exact path='/error' element={<Error/>} />
           </Routes>
 				</div>
 			</div>

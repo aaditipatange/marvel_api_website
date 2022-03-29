@@ -4,9 +4,12 @@ import '../App.css';
 const Home = () => {
 	return (
 		<div>
-			<p>
-				This is a Marvel Application where you can get information about Marvel Characters, Comics and Series. Please click on any of the aboce button 
-				to explore the contents on this API.
+			<p className='hometext'>
+			Marvel Studios is an entertainment brand defined the stories and successes of our more than 8,000 
+			incredible characters like Iron Man, Thor, Black Panther and Captain America. 
+			Based at the Walt Disney Studios in Burbank, California, Marvel Studios is one of the most successful 
+			movie studios in the world, today. The Marvel Cinematic Universe multi-film franchises, 
+			led by President Kevin Feige, is a universe filled with creativity, innovation and collaboration.
 			</p>
 
 			{/* <p className='hometext'>

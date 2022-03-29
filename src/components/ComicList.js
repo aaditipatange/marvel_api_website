@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import SearchComics from './SearchComics';
 import noImage from '../img/download.jpeg';
-import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles } from '@material-ui/core';
+import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography, makeStyles ,Button} from '@material-ui/core';
 
 import '../App.css';
 const useStyles = makeStyles({
@@ -13,11 +13,11 @@ const useStyles = makeStyles({
 		marginLeft: 'auto',
 		marginRight: 'auto',
 		borderRadius: 5,
-		border: '1px solid #1e8678',
+		border: '1px solid #4879e2',
 		boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);'
 	},
 	titleHead: {
-		borderBottom: '1px solid #1e8678',
+		borderBottom: '1px solid #4879e2',
 		fontWeight: 'bold'
 	},
 	grid: {
@@ -32,7 +32,11 @@ const useStyles = makeStyles({
 		color: '#1e8678',
 		fontWeight: 'bold',
 		fontSize: 12
-	}
+	},
+	disabledButton: {
+		color: '#767676 !important',
+		// backgroundColor: theme.palette.primary || 'red'
+	  }
 });
 const md5 = require('blueimp-md5');
 const publickey = '646c22ad868b1200b3d7197c31274da1';
@@ -55,22 +59,24 @@ const ComList = () => {
 	const [ comicData, setComicData ] = useState(undefined);
 	const [ searchTerm, setSearchTerm ] = useState('');
 	const [ pageCount, setPageCount ] = useState(0);
-	const [ itemOffset, setItemOffset ] = useState(0);
+	//const [ itemOffset, setItemOffset ] = useState(0);
 	const [ error, setError ] = useState('');
 	
 	let card = null;
 
 	useEffect(() => {
 		console.log('on load useeffect');
-		setItemOffset(itemState);
+		//setItemOffset(itemState);
 		async function fetchData() {
 			try {
+				const itemsPerPage = 20;
+	            let itemState = itemsPerPage * page;
 				console.log(url);
-				const { data } = await axios.get(baseUrl + '?offset='+itemOffset+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
+				const { data } = await axios.get(baseUrl + '?offset='+itemState+'&limit=20&ts=' + ts + '&apikey=' + publickey + '&hash=' + hash);
 				setComicData(data);
 				setPageCount(Math.ceil(data.data.total / itemsPerPage));
 				setLoading(false);
-				if(page>=(Math.ceil(data.data.total / itemsPerPage))){
+				if(isNaN(page) || page<0 || page>=(Math.ceil(data.data.total / itemsPerPage))){
 					setError('404 Page not found');
 				}
 			} catch (e) {
@@ -78,7 +84,7 @@ const ComList = () => {
 			}
 		}
 		fetchData();
-	}, [itemOffset,page,pageCount,itemState]);
+	}, [page,pageCount,itemState]);
 
 	useEffect(
 		() => {
@@ -174,16 +180,17 @@ const ComList = () => {
 		);
 	}else if(error){
 		return (
-			<div>
-				<h2>{error}</h2>
-			</div>
+			<Navigate replace to='/error'/>
+			// <div>
+			// 	<h2>{error}</h2>
+			// </div>
 		);
 	} else {
 		return (
 			<div>
-				<button disabled={page>0?false:true} onClick={prevPage}>Previous Page</button>
+				<Button classes={{ disabled: classes.disabledButton }} disabled={page>0?false:true} onClick={prevPage}>Previous Page</Button>
 				&nbsp;&nbsp;
-				<button disabled={page>=(pageCount-1)?true:false} onClick={nextPage}>Next Page</button><br/><br/>
+				<Button classes={{ disabled: classes.disabledButton }} disabled={page>=(pageCount-1)?true:false} onClick={nextPage}>Next Page</Button><br/><br/>
 				<SearchComics searchValue={searchValue} />
 				<Grid container className={classes.grid} spacing={5}>
 					{card}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import noImage from '../img/download.jpeg';
+//import Redirect from 
 import { makeStyles, Card, CardContent, CardMedia, Typography, CardHeader } from '@material-ui/core';
 import '../App.css';
 const useStyles = makeStyles({
@@ -15,7 +16,7 @@ const useStyles = makeStyles({
 		boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);'
 	},
 	titleHead: {
-		borderBottom: '1px solid #1e8678',
+		borderBottom: '1px solid',
 		fontWeight: 'bold'
 	},
 	grid: {
@@ -69,6 +70,14 @@ const Comic = () => {
 		[ id ]
 	);
 
+	// const getLink = ()=> {
+	// 		let seriesId = comData.data.results[0].series.resourceURI.split('/')
+	// 		seriesId = seriesId[seriesId.length-1];
+	// 		let link = window.location.href.split('comics');
+	// 		link = link[0] +'series/'+ seriesId;
+	// 		return link;
+	// }
+
 	if (loading) {
 		return (
 			<div>
@@ -78,9 +87,10 @@ const Comic = () => {
 	} 
 	else if(error){
 		return (
-			<div>
-				<h2>{error}</h2>
-			</div>
+			<Navigate replace to='/error'/>
+			// <div>
+			// 	<h2>{error}</h2>
+			// </div>
 		);
 	}
 	else {
@@ -104,13 +114,7 @@ const Comic = () => {
 							</p>
 							<p>
 								<dt className='title'>Series:</dt>
-								{comData && comData.data.results[0].series ? (
-									<dd>
-										{/* {  <a href={comData.data.results[0].series.resourceURI.split('series')}>{series.name}<br/></a>} */}
-									</dd>
-								) : (
-									<dd>N/A</dd>
-								)}
+								{comData && comData.data.results[0].series ? <dd>{comData.data.results[0].series.name}</dd> : <dd>N/A</dd>}
 							</p>
 							<p>
 								<dt className='title'>Characters:</dt>
